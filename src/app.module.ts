@@ -11,6 +11,7 @@ import { PostsService } from './posts/posts.service';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import configurations from './config';
 import { S3Service } from './s3/s3.service';
+
 const { NODE_ENV } = process.env;
 
 @Module({
