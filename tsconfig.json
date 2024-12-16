@@ -13,6 +13,7 @@
     "incremental": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types", "./typings.d.ts"],
     "paths": {
       "@config/*": ["src/config/*"],
       "@validators/*": ["src/validators/*"],

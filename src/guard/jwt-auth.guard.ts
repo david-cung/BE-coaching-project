@@ -7,6 +7,14 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 
+interface JwtPayload {
+  sub: string;
+  email: string;
+  roles?: string[];
+  iat?: number;
+  exp?: number;
+}
+
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService) {}
@@ -14,21 +22,20 @@ export class JwtAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
+
     if (!token) {
       throw new UnauthorizedException('Token not found');
     }
-    console.log('token', token);
+
     try {
-      const decoded = this.jwtService.verify(token, {
+      const decoded = this.jwtService.verify<JwtPayload>(token, {
         secret: process.env.JWT_SECRET_KEY,
       });
-      console.log('token1232131231', decoded);
 
-      // request.user = decoded;
-      console.log('12313123123123123123123412312', token);
-
+      request.user = decoded;
       return true;
     } catch (err) {
+      console.error('Invalid token:', err);
       throw new UnauthorizedException('Invalid token');
     }
   }
