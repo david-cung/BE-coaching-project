@@ -12,9 +12,11 @@ export class PostsService {
     private readonly postRepository: Repository<Post>,
   ) {}
 
-  async getAllPosts() {
-    // Implement your logic to fetch all posts
-    return [];
+  async getListPost(userId: string, postQuery: string): Promise<Post[] | []> {
+    if (postQuery.length) {
+      console.log('postQuery');
+    }
+    return this.postRepository.find({ where: { userId } });
   }
 
   // async getPostById(id: number) {
