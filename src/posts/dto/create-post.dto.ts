@@ -14,9 +14,14 @@ export class CreatePostDto {
   image: string;
 
   @IsString()
+  @IsOptional()
   category: string;
 
   @IsString()
   @IsOptional()
   slug: string;
+
+  @IsString()
+  @IsOptional()
+  updatedAt: Date;
 }

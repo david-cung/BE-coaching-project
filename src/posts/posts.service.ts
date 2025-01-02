@@ -16,7 +16,7 @@ export class PostsService {
     if (postQuery.length) {
       console.log('postQuery');
     }
-    return this.postRepository.find({ where: { userId } });
+    return this.postRepository.find({ where: { userId, isDeleted: false } });
   }
 
   // async getPostById(id: number) {
@@ -28,5 +28,10 @@ export class PostsService {
     const id = uuidv4();
     await this.postRepository.insert({ ...postData, userId, id });
     return id;
+  }
+
+  async deletePost(userId: string, postId: string): Promise<any> {
+    await this.postRepository.update(postId, { isDeleted: true, userId });
+    return 'Post deleted successfully';
   }
 }

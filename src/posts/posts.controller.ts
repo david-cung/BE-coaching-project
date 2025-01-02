@@ -1,4 +1,13 @@
-import { Body, Controller, Post, UseGuards, Query, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  Query,
+  Get,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { JwtAuthGuard } from '@guard/jwt-auth.guard';
@@ -35,5 +44,14 @@ export class PostsController {
   ): Promise<CreatePostDto[]> {
     const posts = await this.postsService.getListPost(user.userId, postQuery);
     return plainToInstance(CreatePostDto, posts);
+  }
+
+  @Delete('/:id')
+  async deletePost(
+    @User() user: AuthenticatedUser,
+    @Param() id: string,
+  ): Promise<string> {
+    console.log('id1111', id);
+    return this.postsService.deletePost(user.userId, id);
   }
 }

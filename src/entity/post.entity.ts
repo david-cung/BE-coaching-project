@@ -1,9 +1,11 @@
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 
@@ -24,11 +26,20 @@ export class Post extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   image: string;
 
-  @Column({ default: 'Uncategorized' })
+  @Column({ default: 'Uncategorized', nullable: true })
   category: string;
 
   @Column({ type: 'varchar', nullable: true })
   slug: string;
+
+  @Column({ type: 'boolean', default: false })
+  isDeleted: boolean;
+
+  @CreateDateColumn({ select: false })
+  createdAt!: Date;
+
+  @UpdateDateColumn({ select: false })
+  updatedAt!: Date;
 
   @ManyToOne(() => User)
   user!: User;
