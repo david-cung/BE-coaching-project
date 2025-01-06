@@ -38,7 +38,7 @@ export class Post extends BaseEntity {
   @CreateDateColumn({ select: false })
   createdAt!: Date;
 
-  @UpdateDateColumn({ select: false })
+  @UpdateDateColumn()
   updatedAt!: Date;
 
   @ManyToOne(() => User)

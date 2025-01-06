@@ -17,7 +17,6 @@ import { S3Service } from '../common/services/s3/s3.service';
 import { plainToInstance } from 'class-transformer';
 
 @Controller('posts')
-@UseGuards(JwtAuthGuard)
 export class PostsController {
   constructor(
     private readonly postsService: PostsService,
@@ -30,6 +29,7 @@ export class PostsController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async createPost(
     @User() user: AuthenticatedUser,
     @Body() postData: CreatePostDto,
@@ -42,16 +42,23 @@ export class PostsController {
     @User() user: AuthenticatedUser,
     @Query() postQuery: string,
   ): Promise<CreatePostDto[]> {
-    const posts = await this.postsService.getListPost(user.userId, postQuery);
+    const posts = await this.postsService.getListPost(postQuery, user?.userId);
     return plainToInstance(CreatePostDto, posts);
+  }
+
+  @Get('/:id')
+  async getDetailPost(
+    @User() user: AuthenticatedUser,
+    @Param() param,
+  ): Promise<any> {
+    return this.postsService.getPostById(param.id, user?.userId);
   }
 
   @Delete('/:id')
   async deletePost(
     @User() user: AuthenticatedUser,
-    @Param() id: string,
+    @Param() param,
   ): Promise<string> {
-    console.log('id1111', id);
-    return this.postsService.deletePost(user.userId, id);
+    return this.postsService.deletePost(user.userId, param.id);
   }
 }

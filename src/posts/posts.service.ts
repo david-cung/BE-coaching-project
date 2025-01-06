@@ -12,17 +12,27 @@ export class PostsService {
     private readonly postRepository: Repository<Post>,
   ) {}
 
-  async getListPost(userId: string, postQuery: string): Promise<Post[] | []> {
-    if (postQuery.length) {
-      console.log('postQuery');
+  async getListPost(
+    postQuery: string,
+    userId?: string,
+  ): Promise<CreatePostDto[] | []> {
+    if (userId) {
+      return this.postRepository.find({ where: { userId, isDeleted: false } });
     }
-    return this.postRepository.find({ where: { userId, isDeleted: false } });
+    const a = await this.postRepository.find({ where: { isDeleted: false } });
+    console.log('a', a);
+    return a;
   }
 
-  // async getPostById(id: number) {
-  //   // Implement your logic to fetch a single post by ID
-  //   return null;
-  // }
+  async getPostById(id: string, userId?: string) {
+    console.log('userId', userId, id);
+    if (!userId) {
+      return this.postRepository.findOne({ where: { id, isDeleted: false } });
+    }
+    return this.postRepository.findOne({
+      where: { id, isDeleted: false, userId },
+    });
+  }
 
   async createPost(userId: string, postData: CreatePostDto): Promise<any> {
     const id = uuidv4();
