@@ -19,9 +19,7 @@ export class PostsService {
     if (userId) {
       return this.postRepository.find({ where: { userId, isDeleted: false } });
     }
-    const a = await this.postRepository.find({ where: { isDeleted: false } });
-    console.log('a', a);
-    return a;
+    return this.postRepository.find({ where: { isDeleted: false } });
   }
 
   async getPostById(id: string, userId?: string) {
