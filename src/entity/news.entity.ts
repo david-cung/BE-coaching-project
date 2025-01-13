@@ -17,7 +17,7 @@ export class News extends BaseEntity {
   @Column({ type: 'varchar', length: 36 })
   userId: string;
 
-  @Column({ type: 'varchar', length: 10000 })
+  @Column({ type: 'text', charset: 'utf8mb4', collation: 'utf8mb4_unicode_ci' }) // Updated
   content: string;
 
   @Column({ type: 'varchar', length: 1000 })

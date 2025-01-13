@@ -16,5 +16,7 @@ export default registerAs('db', () => ({
   entities: [`${__dirname}/**/*.entity{.ts,.js}`],
   extra: {
     connectionLimit: parseInt(process.env.ORM_CONNECTION_LIMIT || '10', 10),
+    charset: 'utf8mb4_general_ci', // Hoặc utf8mb4_unicode_ci
   },
+  charset: 'utf8mb4', // Đảm bảo kết nối hỗ trợ emoji
 }));
