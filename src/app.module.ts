@@ -10,7 +10,7 @@ import { PostsModule } from './posts/posts.module';
 import { PostsService } from './posts/posts.service';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import configurations from './config';
-import { NewsModule } from './services/news.module';
+import { NewsModule } from './news/news.module';
 
 const { NODE_ENV } = process.env;
 
