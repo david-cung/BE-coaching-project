@@ -9,18 +9,19 @@ import {
   Param,
   Put,
 } from '@nestjs/common';
-import { NewsService } from './news.service';
-import { CreateNewsDto } from './dto/create-news.dto';
+import { ServicesService } from './services.service';
+import { CreateServiceDto } from './dto/create-service.dto';
 import { JwtAuthGuard } from '@guard/jwt-auth.guard';
 import { User } from '../decorators/user.decorator';
 import { AuthenticatedUser } from '../shared/interfaces';
 import { S3Service } from '../common/services/s3/s3.service';
 import { plainToInstance } from 'class-transformer';
+import { GetServiceDto } from './dto/get-service.dto';
 
-@Controller('news')
-export class NewsController {
+@Controller('services')
+export class ServicesController {
   constructor(
-    private readonly newsService: NewsService,
+    private readonly servicesService: ServicesService,
     private readonly s3Service: S3Service,
   ) {}
 
@@ -33,21 +34,21 @@ export class NewsController {
   @UseGuards(JwtAuthGuard)
   async createService(
     @User() user: AuthenticatedUser,
-    @Body() serviceData: CreateNewsDto,
+    @Body() ServiceData: CreateServiceDto,
   ): Promise<string> {
-    return this.newsService.createService(user.userId, serviceData);
+    return this.servicesService.createService(user.userId, ServiceData);
   }
 
   @Get()
   async getListService(
     @User() user: AuthenticatedUser,
-    @Query() serviceQuery: string,
-  ): Promise<CreateNewsDto[]> {
-    const news = await this.newsService.getListService(
-      serviceQuery,
+    @Query() ServiceQuery: GetServiceDto,
+  ): Promise<CreateServiceDto[]> {
+    const services = await this.servicesService.getListService(
+      ServiceQuery,
       user?.userId,
     );
-    return plainToInstance(CreateNewsDto, news);
+    return plainToInstance(CreateServiceDto, services);
   }
 
   @Get('/:id')
@@ -55,22 +56,28 @@ export class NewsController {
     @User() user: AuthenticatedUser,
     @Param() param,
   ): Promise<any> {
-    return this.newsService.getServiceById(param.id, user?.userId);
+    return this.servicesService.getServiceById(param.id, user?.userId);
   }
+
   @Put('/:id')
   async updateService(
     @User() user: AuthenticatedUser,
     @Param() param,
-    @Body() serviceData: CreateNewsDto,
+    @Body() serviceData: CreateServiceDto,
   ): Promise<any> {
-    return this.newsService.updateService(param.id, serviceData, user?.userId);
+    return this.servicesService.updateService(
+      param.id,
+      serviceData,
+      user?.userId,
+    );
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete('/:id')
   async deleteService(
     @User() user: AuthenticatedUser,
     @Param() param,
   ): Promise<string> {
-    return this.newsService.deleteService(user.userId, param.id);
+    return this.servicesService.deleteService(user.userId, param.id);
   }
 }

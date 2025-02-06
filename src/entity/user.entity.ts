@@ -8,7 +8,7 @@ import {
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
-import { Post } from './post.entity';
+import { Service } from './services.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -41,8 +41,8 @@ export class User extends BaseEntity {
   })
   updatedAt: string;
 
-  @OneToMany(() => Post, (post) => post.userId)
-  post?: Post;
+  @OneToMany(() => Service, (post) => post.userId)
+  service?: Service;
 
   constructor(partial: Partial<User>) {
     super();

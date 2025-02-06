@@ -1,6 +1,6 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateServiceDto {
+export class CreateNewsDto {
   @IsNotEmpty()
   @IsString()
   content: string;
@@ -20,6 +20,18 @@ export class CreateServiceDto {
   @IsString()
   @IsOptional()
   slug: string;
+
+  @IsString()
+  @IsOptional()
+  userId: string;
+
+  @IsString()
+  @IsOptional()
+  id: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isDeleted: boolean;
 
   @IsString()
   @IsOptional()

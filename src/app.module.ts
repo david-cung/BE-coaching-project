@@ -6,8 +6,8 @@ import appConfig from '@config/app.config';
 import authConfig from '@config/auth.config';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './users/user.module';
-import { PostsModule } from './posts/posts.module';
-import { PostsService } from './posts/posts.service';
+import { ServicesModule } from './services/services.module';
+import { ServicesService } from './services/services.service';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import configurations from './config';
 import { NewsModule } from './news/news.module';
@@ -36,7 +36,7 @@ const { NODE_ENV } = process.env;
       inject: [ConfigService],
     }),
     AuthModule,
-    PostsModule,
+    ServicesModule,
     UserModule,
     NewsModule,
   ],
@@ -46,7 +46,7 @@ const { NODE_ENV } = process.env;
       provide: APP_FILTER,
       useClass: AllExceptionFilter,
     },
-    PostsService,
+    ServicesService,
   ],
 })
 export class AppModule {}

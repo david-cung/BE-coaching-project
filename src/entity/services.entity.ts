@@ -9,8 +9,8 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 
-@Entity({ name: 'posts' })
-export class Post extends BaseEntity {
+@Entity({ name: 'services' })
+export class Service extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -44,7 +44,7 @@ export class Post extends BaseEntity {
   @ManyToOne(() => User)
   user!: User;
 
-  constructor(partial: Partial<Post>) {
+  constructor(partial: Partial<Service>) {
     super();
     Object.assign(this, partial);
   }
