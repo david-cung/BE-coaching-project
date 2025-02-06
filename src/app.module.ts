@@ -11,6 +11,8 @@ import { ServicesService } from './services/services.service';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import configurations from './config';
 import { NewsModule } from './news/news.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 const { NODE_ENV } = process.env;
 
@@ -40,13 +42,14 @@ const { NODE_ENV } = process.env;
     UserModule,
     NewsModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_FILTER,
       useClass: AllExceptionFilter,
     },
     ServicesService,
+    AppService,
   ],
 })
 export class AppModule {}
