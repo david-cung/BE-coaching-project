@@ -1,4 +1,4 @@
 export default (): Record<string, string> => ({
-  jwtSecretKey: process.env.JWT_SECRET_KEY,
+  jwtSecretKey: '1231231232131231223',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN,
 });

@@ -29,7 +29,7 @@ export class JwtAuthGuard implements CanActivate {
 
     try {
       const decoded = this.jwtService.verify<JwtPayload>(token, {
-        secret: process.env.JWT_SECRET_KEY,
+        secret: '1231231232131231223',
       });
 
       request.user = decoded;
