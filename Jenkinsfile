@@ -6,6 +6,7 @@ pipeline {
         SERVER_HOST = "103.170.123.199"         // IP Server B
         PROJECT_DIR = "/intest"      // Thư mục deploy trên Server B
         REPO_URL = "git@github.com:david-cung/BE-coaching-project.git"
+        PATH = "/Users/dc/.nvm/versions/node/v20.16.0/bin:$PATH"
     }
 
     stages {
