@@ -38,7 +38,7 @@ pipeline {
                 sh """
                 ssh ${SERVER_USER}@${SERVER_HOST} '
                 pm2 delete coaching-app || true
-                pm2 start ${PROJECT_DIR}/dist/main.js --name coaching-app
+                pm2 start ${PROJECT_DIR}/dist/src/main.js --name coaching-app
                 pm2 save
                 pm2 restart coaching-app
                 '
