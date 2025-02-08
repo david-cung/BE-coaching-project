@@ -27,7 +27,7 @@ pipeline {
             steps {
                 sh """
                 ssh ${SERVER_USER}@${SERVER_HOST} 'mkdir -p ${PROJECT_DIR}'
-                scp -r dist package.json ${SERVER_USER}@${SERVER_HOST}:${PROJECT_DIR}/
+                scp -r dist package.json .env ${SERVER_USER}@${SERVER_HOST}:${PROJECT_DIR}/
                 ssh ${SERVER_USER}@${SERVER_HOST} 'cd ${PROJECT_DIR} && npm install --only=prod'
                 """
             }
