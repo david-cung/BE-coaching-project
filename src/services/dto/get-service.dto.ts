@@ -6,4 +6,7 @@ export class GetServiceDto {
 
   @IsOptional()
   offset: number = 8;
+
+  @IsOptional()
+  category: string;
 }

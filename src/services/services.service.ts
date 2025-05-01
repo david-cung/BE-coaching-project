@@ -10,19 +10,19 @@ import { GetServiceDto } from './dto/get-service.dto';
 export class ServicesService {
   constructor(
     @InjectRepository(Service)
-    private readonly ServiceRepository: Repository<Service>,
+    private readonly serviceRepository: Repository<Service>,
     private readonly dataSource: DataSource,
   ) {}
 
   async getListService(
-    ServiceQuery: GetServiceDto,
+    serviceQuery: GetServiceDto,
     userId?: string,
   ): Promise<CreateServiceDto[] | []> {
-    const { limit, offset } = ServiceQuery;
+    const { limit, offset, category } = serviceQuery;
+    const query = this.dataSource.createQueryBuilder(Service, 'service');
 
     if (userId) {
-      const data = await this.dataSource
-        .createQueryBuilder(Service, 'service')
+      const data = await query
         .where('service.isDeleted IS NOT TRUE')
         .orderBy('service.updatedAt DESC')
         .limit(limit)
@@ -30,16 +30,24 @@ export class ServicesService {
         .getMany();
       return data;
     }
-    return this.ServiceRepository.find({ where: { isDeleted: false } });
+
+    if (category) {
+      query
+        .where('service.isDeleted IS NOT TRUE')
+        .andWhere('service.category = :category', { category })
+        .orderBy('service.updatedAt DESC');
+    }
+
+    return query.limit(limit).offset(offset).getMany();
   }
 
   async getServiceById(id: string, userId?: string) {
     if (!userId) {
-      return this.ServiceRepository.findOne({
+      return this.serviceRepository.findOne({
         where: { id, isDeleted: false, userId },
       });
     }
-    return this.ServiceRepository.findOne({
+    return this.serviceRepository.findOne({
       where: { id, isDeleted: false, userId },
     });
   }
@@ -50,11 +58,11 @@ export class ServicesService {
     userId?: string,
   ) {
     if (!userId) {
-      return this.ServiceRepository.update(id, {
+      return this.serviceRepository.update(id, {
         ...serviceData,
       });
     }
-    return this.ServiceRepository.findOne({
+    return this.serviceRepository.findOne({
       where: { id, isDeleted: false, userId },
     });
   }
@@ -64,12 +72,12 @@ export class ServicesService {
     ServiceData: CreateServiceDto,
   ): Promise<any> {
     const id = uuidv4();
-    await this.ServiceRepository.insert({ ...ServiceData, userId, id });
+    await this.serviceRepository.insert({ ...ServiceData, userId, id });
     return id;
   }
 
   async deleteService(userId: string, ServiceId: string): Promise<any> {
-    await this.ServiceRepository.update(ServiceId, { isDeleted: true, userId });
+    await this.serviceRepository.update(ServiceId, { isDeleted: true, userId });
     return 'Service deleted successfully';
   }
 }
