@@ -34,11 +34,14 @@ export class ServicesService {
     if (category) {
       query
         .where('service.isDeleted IS NOT TRUE')
-        .andWhere('service.category = :category', { category })
-        .orderBy('service.updatedAt DESC');
+        .andWhere('service.category = :category', { category });
     }
 
-    return query.limit(limit).offset(offset).getMany();
+    return query
+      .limit(limit)
+      .offset(offset)
+      .orderBy('service.createdAt', 'DESC')
+      .getMany();
   }
 
   async getServiceById(id: string, userId?: string) {
