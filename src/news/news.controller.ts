@@ -57,13 +57,14 @@ export class NewsController {
   ): Promise<any> {
     return this.newsService.getServiceById(param.id, user?.userId);
   }
+
   @Put('/:id')
-  async updateService(
+  async updateNews(
     @User() user: AuthenticatedUser,
     @Param() param,
     @Body() serviceData: CreateNewsDto,
   ): Promise<any> {
-    return this.newsService.updateService(param.id, serviceData, user?.userId);
+    return this.newsService.updateNews(param.id, serviceData, user?.userId);
   }
 
   @Delete('/:id')

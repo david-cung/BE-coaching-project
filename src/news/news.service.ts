@@ -5,6 +5,8 @@ import { CreateNewsDto } from './dto/create-news.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { News } from '../entity/news.entity';
 import { Repository } from 'typeorm';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class NewsService {
@@ -36,7 +38,7 @@ export class NewsService {
     });
   }
 
-  async updateService(id: string, serviceData: CreateNewsDto, userId?: string) {
+  async updateNews(id: string, serviceData: CreateNewsDto, userId?: string) {
     if (!userId) {
       return this.newRepository.update(id, {
         ...serviceData,
@@ -57,7 +59,45 @@ export class NewsService {
   }
 
   async deleteService(userId: string, serviceId: string): Promise<any> {
+  try {
+    // Lấy thông tin service trước khi xóa để có được đường dẫn ảnh
+    const service = await this.newRepository.findOne({ where: { id: serviceId } });
+    
+    if (!service) {
+      throw new Error('Service not found');
+    }
+    
+    // Xóa record trong database
     await this.newRepository.delete(serviceId);
+    
+    // Xóa file ảnh nếu có
+    if (service.image) {
+      try {
+        // Trích xuất tên file từ URL
+        // Giả sử URL có dạng: https://intest.vn/uploads/filename.jpg
+        const imageUrl = service.image;
+        const filename = imageUrl.split('/').pop(); // Lấy tên file cuối cùng
+        
+        if (filename) {
+          const filePath = path.join('/intest/uploads', filename);
+          
+          // Kiểm tra file có tồn tại không trước khi xóa
+          if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+            console.log(`Image file deleted: ${filePath}`);
+          }
+        }
+      } catch (fileError) {
+        console.error('Error deleting image file:', fileError);
+        // Không throw error ở đây vì record đã được xóa thành công
+        // Chỉ log lỗi để theo dõi
+      }
+    }
+    
     return 'Service deleted successfully';
+  } catch (error) {
+    console.error('Error deleting service:', error);
+    throw error;
   }
+}
 }
