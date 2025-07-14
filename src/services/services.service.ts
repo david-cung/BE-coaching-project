@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from '../entity/services.entity';
 import { DataSource, Repository } from 'typeorm';
 import { GetServiceDto } from './dto/get-service.dto';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class ServicesService {
@@ -79,8 +81,48 @@ export class ServicesService {
     return id;
   }
 
-  async deleteService(userId: string, ServiceId: string): Promise<any> {
-    await this.serviceRepository.update(ServiceId, { isDeleted: true, userId });
-    return 'Service deleted successfully';
+  async deleteService(userId: string, serviceId: string): Promise<any> {
+    try {
+      // Lấy thông tin service trước khi xóa để có được đường dẫn ảnh
+      const service = await this.serviceRepository.findOne({
+        where: { id: serviceId },
+      });
+
+      if (!service) {
+        throw new Error('Service not found');
+      }
+
+      // Xóa record trong database
+      await this.serviceRepository.delete(serviceId);
+
+      // Xóa file ảnh nếu có
+      if (service.image) {
+        try {
+          // Trích xuất tên file từ URL
+          // Giả sử URL có dạng: https://intest.vn/uploads/filename.jpg
+          const imageUrl = service.image;
+          const filename = imageUrl.split('/').pop(); // Lấy tên file cuối cùng
+
+          if (filename) {
+            const filePath = path.join('/intest/uploads', filename);
+
+            // Kiểm tra file có tồn tại không trước khi xóa
+            if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath);
+              console.log(`Image file deleted: ${filePath}`);
+            }
+          }
+        } catch (fileError) {
+          console.error('Error deleting image file:', fileError);
+          // Không throw error ở đây vì record đã được xóa thành công
+          // Chỉ log lỗi để theo dõi
+        }
+      }
+
+      return 'Service deleted successfully';
+    } catch (error) {
+      console.error('Error deleting service:', error);
+      throw error;
+    }
   }
 }
