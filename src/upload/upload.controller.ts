@@ -37,7 +37,8 @@ export class UploadController {
   uploadImage(@UploadedFile() file: Express.Multer.File, @Req() req: Request) {
     const protocol = req.protocol;
     const host = req.get('host'); // ví dụ: localhost:3000
-
+     console.log('protocol:', req.protocol);
+  console.log('headers:', req.headers);
     const fileUrl = `${protocol}://${host}/uploads/${file.filename}`;
 
     return {
