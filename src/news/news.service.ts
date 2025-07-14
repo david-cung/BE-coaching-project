@@ -57,7 +57,8 @@ export class NewsService {
   }
 
   async deleteService(userId: string, serviceId: string): Promise<any> {
-    await this.newRepository.update(serviceId, { isDeleted: true, userId });
+    console.log('23942343')
+    await this.newRepository.delete(serviceId);
     return 'Service deleted successfully';
   }
 }
