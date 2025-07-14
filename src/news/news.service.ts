@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateNewsDto } from './dto/create-news.dto';
@@ -46,7 +47,7 @@ export class NewsService {
     });
   }
 
-  async createService(
+  async createNews(
     userId: string,
     serviceData: CreateNewsDto,
   ): Promise<any> {

@@ -31,11 +31,11 @@ export class NewsController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  async createService(
+  async createNews(
     @User() user: AuthenticatedUser,
     @Body() serviceData: CreateNewsDto,
   ): Promise<string> {
-    return this.newsService.createService(user.userId, serviceData);
+    return this.newsService.createNews(user.userId, serviceData);
   }
 
   @Get()
@@ -67,6 +67,7 @@ export class NewsController {
   }
 
   @Delete('/:id')
+  @UseGuards(JwtAuthGuard)
   async deleteService(
     @User() user: AuthenticatedUser,
     @Param() param,
