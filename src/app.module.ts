@@ -13,6 +13,8 @@ import configurations from './config';
 import { NewsModule } from './news/news.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ChatGateway } from './socket/chat.gateway';
+import { UploadModule } from './upload/upload.module';
 
 const { NODE_ENV } = process.env;
 
@@ -41,6 +43,8 @@ const { NODE_ENV } = process.env;
     ServicesModule,
     UserModule,
     NewsModule,
+    ChatGateway,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [
