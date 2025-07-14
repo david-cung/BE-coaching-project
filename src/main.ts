@@ -22,7 +22,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseTransformInterceptor());
   app.useGlobalPipes(new ValidationPipe(ValidationConfig));
   app.setGlobalPrefix(configService.get<string>('apiPrefix'));
-
+  app.set('trust proxy', 1);
   const port = configService.get<number>('port');
   await app.listen(port);
   console.log(`app running on port ${port}`)
