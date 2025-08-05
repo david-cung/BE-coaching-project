@@ -5,7 +5,7 @@ export class GetServiceDto {
   limit: number = 8;
 
   @IsOptional()
-  offset: number = 1;
+  offset: number = 0;
 
   @IsOptional()
   category: string;
