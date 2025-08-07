@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateServiceDto } from './dto/create-service.dto';
@@ -19,31 +20,73 @@ export class ServicesService {
   async getListService(
     serviceQuery: GetServiceDto,
     userId?: string,
-  ): Promise<CreateServiceDto[] | []> {
+  ): Promise<{
+    data: CreateServiceDto[];
+    total: number;
+    limit: number;
+    offset: number;
+    totalPages: number;
+  }> {
     const { limit, offset, category } = serviceQuery;
-    const query = this.dataSource.createQueryBuilder(Service, 'service');
 
     if (userId) {
-      const data = await query
+      // Query for data with pagination
+      const dataQuery = this.dataSource.createQueryBuilder(Service, 'service')
         .where('service.isDeleted IS NOT TRUE')
-        .orderBy('service.updatedAt DESC')
+        .orderBy('service.updatedAt', 'DESC')
         .limit(limit)
-        .offset(offset)
-        .getMany();
-      return data;
+        .offset(offset);
+
+      // Query for total count
+      const countQuery = this.dataSource.createQueryBuilder(Service, 'service')
+        .where('service.isDeleted IS NOT TRUE');
+
+      const [data, total] = await Promise.all([
+        dataQuery.getMany(),
+        countQuery.getCount()
+      ]);
+
+      return {
+        data,
+        total,
+        limit,
+        offset,
+        totalPages: Math.ceil(total / limit)
+      };
     }
+
+    // Build base query conditions
+    let whereCondition = 'service.isDeleted IS NOT TRUE';
+    const parameters: any = {};
 
     if (category) {
-      query
-        .where('service.isDeleted IS NOT TRUE')
-        .andWhere('service.category = :category', { category });
+      whereCondition += ' AND service.category = :category';
+      parameters.category = category;
     }
 
-    return query
-      .limit(limit)
-      .offset(offset)
+    // Query for data with pagination
+    const dataQuery = this.dataSource.createQueryBuilder(Service, 'service')
+      .where(whereCondition, parameters)
       .orderBy('service.createdAt', 'DESC')
-      .getMany();
+      .limit(limit)
+      .offset(offset);
+
+    // Query for total count
+    const countQuery = this.dataSource.createQueryBuilder(Service, 'service')
+      .where(whereCondition, parameters);
+
+    const [data, total] = await Promise.all([
+      dataQuery.getMany(),
+      countQuery.getCount()
+    ]);
+
+    return {
+      data,
+      total,
+      limit,
+      offset,
+      totalPages: Math.ceil(total / limit)
+    };
   }
 
   async getServiceById(id: string, userId?: string) {

@@ -36,4 +36,8 @@ export class CreateServiceDto {
   @IsString()
   @IsOptional()
   updatedAt: Date;
+
+  @IsString()
+  @IsOptional()
+  totalPage?: number;
 }

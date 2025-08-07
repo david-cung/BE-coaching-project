@@ -15,7 +15,6 @@ import { JwtAuthGuard } from '@guard/jwt-auth.guard';
 import { User } from '../decorators/user.decorator';
 import { AuthenticatedUser } from '../shared/interfaces';
 import { S3Service } from '../common/services/s3/s3.service';
-import { plainToInstance } from 'class-transformer';
 import { GetServiceDto } from './dto/get-service.dto';
 
 @Controller('services')
@@ -43,12 +42,12 @@ export class ServicesController {
   async getListService(
     @User() user: AuthenticatedUser,
     @Query() ServiceQuery: GetServiceDto,
-  ): Promise<CreateServiceDto[]> {
+  ) {
     const services = await this.servicesService.getListService(
       ServiceQuery,
       user?.userId,
     );
-    return plainToInstance(CreateServiceDto, services);
+    return services;
   }
 
   @Get('/:id')

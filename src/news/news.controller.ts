@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -15,7 +16,7 @@ import { JwtAuthGuard } from '@guard/jwt-auth.guard';
 import { User } from '../decorators/user.decorator';
 import { AuthenticatedUser } from '../shared/interfaces';
 import { S3Service } from '../common/services/s3/s3.service';
-import { plainToInstance } from 'class-transformer';
+import { GetServiceDto } from 'src/services/dto/get-service.dto';
 
 @Controller('news')
 export class NewsController {
@@ -41,13 +42,12 @@ export class NewsController {
   @Get()
   async getListService(
     @User() user: AuthenticatedUser,
-    @Query() serviceQuery: string,
-  ): Promise<CreateNewsDto[]> {
-    const news = await this.newsService.getListService(
+    @Query() serviceQuery: GetServiceDto,
+  ){
+    return this.newsService.getListNews(
       serviceQuery,
       user?.userId,
     );
-    return plainToInstance(CreateNewsDto, news);
   }
 
   @Get('/:id')

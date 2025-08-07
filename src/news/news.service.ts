@@ -7,6 +7,7 @@ import { News } from '../entity/news.entity';
 import { Repository } from 'typeorm';
 import * as fs from 'fs';
 import * as path from 'path';
+import { GetServiceDto } from 'src/services/dto/get-service.dto';
 
 @Injectable()
 export class NewsService {
@@ -15,16 +16,49 @@ export class NewsService {
     private readonly newRepository: Repository<News>,
   ) {}
 
-  async getListService(
-    serviceQuery: string,
+  async getListNews(
+    newsQuery: GetServiceDto,
     userId?: string,
-  ): Promise<News[] | []> {
+  ): Promise<{
+    data: News[];
+    total: number;
+    limit: number;
+    offset: number;
+    totalPages: number;
+  }> {
+    const { limit = 10, offset = 0, category } = newsQuery;
+
+    // Build base query conditions
+    const whereConditions: any = { isDeleted: false };
+    
     if (userId) {
-      return this.newRepository.find({
-        where: { userId, isDeleted: false },
-      });
+      whereConditions.userId = userId;
     }
-    return this.newRepository.find({ where: { isDeleted: false } });
+    
+    if (category) {
+      whereConditions.category = category;
+    }
+
+    // Query for data with pagination
+    const [data, total] = await Promise.all([
+      this.newRepository.find({
+        where: whereConditions,
+        order: { createdAt: 'DESC' },
+        take: limit,
+        skip: offset,
+      }),
+      this.newRepository.count({
+        where: whereConditions,
+      })
+    ]);
+
+    return {
+      data,
+      total,
+      limit,
+      offset,
+      totalPages: Math.ceil(total / limit)
+    };
   }
 
   async getServiceById(id: string, userId?: string) {
