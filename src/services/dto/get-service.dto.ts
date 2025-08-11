@@ -2,10 +2,10 @@ import { IsOptional } from 'class-validator';
 
 export class GetServiceDto {
   @IsOptional()
-  limit: number = 8;
+  limit: number;
 
   @IsOptional()
-  offset: number = 0;
+  offset: number;
 
   @IsOptional()
   category: string;
